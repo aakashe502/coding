@@ -29,63 +29,140 @@ public class carpooling {
     
 }
 
-import React from "react";
-import journeyData from "../data/journeyData";
+/*
 
-const UserJourney = () => {
-  const stepGap = 140; // horizontal spacing between each step
+import React from 'react';
 
+const UserJourneyRoadmap = ({ journey }) => {
   return (
-    <div className="relative w-full overflow-x-auto py-10">
-      {/* SVG paths layer */}
-      <svg
-        className="absolute top-0 left-0 w-full h-full z-0"
-        viewBox={`0 0 ${journeyData.length * stepGap} 200`}
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        {journeyData.slice(0, -1).map((step, index) => {
-          const x1 = index * stepGap + 24;
-          const x2 = (index + 1) * stepGap;
-          const y1 = index % 2 === 0 ? 40 : 120;
-          const y2 = index % 2 === 0 ? 120 : 40;
-          const mx = (x1 + x2) / 2;
-
-          return (
-            <path
-              key={index}
-              d={`M ${x1},${y1} Q ${mx},${(y1 + y2) / 2} ${x2},${y2}`}
-              stroke="#a3a3a3"
-              strokeWidth="2"
-              strokeDasharray="6 6"
-              fill="none"
-            />
-          );
-        })}
-      </svg>
-
-      {/* Journey steps */}
-      <div className="relative flex items-start gap-[80px] px-10 z-10">
-        {journeyData.map((item, index) => (
-          <div
-            key={item.id}
-            className={`flex flex-col items-center relative ${
-              index % 2 === 0 ? "mt-0" : "mt-20"
-            }`}
-          >
-            {/* Circle Step */}
-            <div className="w-12 h-12 rounded-full bg-orange-500 text-white flex items-center justify-center font-bold shadow-md">
-              {item.id}
+    <div className="max-w-4xl mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold text-center mb-8 text-indigo-700">User Journey Roadmap</h1>
+      
+      <div className="relative">
+        {/* Main pathway line */}
+        <div className="absolute left-8 top-0 h-full w-2 bg-indigo-300 rounded-full"></div>
+        
+        <div className="space-y-12 pl-16">
+          {journey.map((step, index) => (
+            <div key={index} className="relative">
+              {/* Step indicator */}
+              <div className="absolute -left-14 top-1/2 transform -translate-y-1/2 w-8 h-8 rounded-full bg-indigo-600 border-4 border-white flex items-center justify-center z-10">
+                <span className="text-white font-bold">{index + 1}</span>
+              </div>
+              
+              {/* Step card */}
+              <div className={`p-6 rounded-lg shadow-md ${index % 2 === 0 ? 'bg-white' : 'bg-indigo-50'} border-l-4 ${getStepColor(index)} relative`}>
+                <h3 className="text-xl font-semibold mb-2">{step.title}</h3>
+                <p className="text-gray-600 mb-4">{step.description}</p>
+                
+                {step.actions && step.actions.length > 0 && (
+                  <div className="mt-4">
+                    <h4 className="text-sm font-medium text-gray-500 mb-2">ACTIONS</h4>
+                    <ul className="space-y-2">
+                      {step.actions.map((action, actionIndex) => (
+                        <li key={actionIndex} className="flex items-start">
+                          <span className="text-indigo-500 mr-2">•</span>
+                          <span className="text-gray-700">{action}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                
+                {/* Connector arrow for all steps except last */}
+                {index < journey.length - 1 && (
+                  <div className={`absolute ${index % 2 === 0 ? 'left-full' : 'right-full'} top-1/2 transform -translate-y-1/2 w-6 h-6`}>
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M9 5L16 12L9 19" stroke="#818CF8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </div>
+                )}
+              </div>
             </div>
-
-            {/* Title */}
-            <span className="mt-2 text-sm text-center w-24">{item.title}</span>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );
 };
 
-export default UserJourney;
+// Helper function to get different border colors for variety
+const getStepColor = (index) => {
+  const colors = [
+    'border-indigo-500',
+    'border-purple-500',
+    'border-blue-500',
+    'border-green-500',
+    'border-yellow-500',
+    'border-red-500',
+  ];
+  return colors[index % colors.length];
+};
+
+export default UserJourneyRoadmap;
+
+
+import React from 'react';
+import UserJourneyRoadmap from './UserJourneyRoadmap';
+
+const App = () => {
+  const userJourney = [
+    {
+      title: 'Awareness',
+      description: 'User first discovers your product or service',
+      actions: [
+        'See social media ad',
+        'Read blog post',
+        'Word of mouth referral'
+      ]
+    },
+    {
+      title: 'Consideration',
+      description: 'User evaluates whether your product fits their needs',
+      actions: [
+        'Visit pricing page',
+        'Compare features',
+        'Read customer reviews'
+      ]
+    },
+    {
+      title: 'Purchase',
+      description: 'User makes the decision to buy or subscribe',
+      actions: [
+        'Add to cart',
+        'Complete checkout',
+        'Receive confirmation'
+      ]
+    },
+    {
+      title: 'Retention',
+      description: 'User continues to use and find value in your product',
+      actions: [
+        'Receive onboarding emails',
+        'Use key features',
+        'Renew subscription'
+      ]
+    },
+    {
+      title: 'Advocacy',
+      description: 'User becomes a promoter of your product',
+      actions: [
+        'Refer friends',
+        'Write positive review',
+        'Share on social media'
+      ]
+    }
+  ];
+
+  return (
+    <div className="min-h-screen bg-gray-50 py-12">
+      <UserJourneyRoadmap journey={userJourney} />
+    </div>
+  );
+};
+
+export default App;
+
+
+
 
