@@ -32,6 +32,150 @@ public class carpooling {
 /*
 
 import React from 'react';
+import { motion } from 'framer-motion';
+import { FiFlag, FiEye, FiHeart, FiShoppingCart, FiRepeat, FiShare2, FiCheckCircle } from 'react-icons/fi';
+
+interface JourneyStep {
+  title: string;
+  icon?: React.ReactNode;
+  description?: string;
+}
+
+const HorizontalJourneyRoadmap: React.FC<{ steps: JourneyStep[] }> = ({ steps }) => {
+  const pathVariants = {
+    hidden: { pathLength: 0 },
+    visible: { 
+      pathLength: 1,
+      transition: { duration: 1.5, ease: "easeInOut" }
+    }
+  };
+
+  const nodeVariants = {
+    hidden: { scale: 0 },
+    visible: { 
+      scale: 1,
+      transition: { type: "spring", damping: 10, stiffness: 100 }
+    }
+  };
+
+  return (
+    <div className="max-w-6xl mx-auto px-4 py-12">
+      <h1 className="text-3xl font-bold text-center mb-16 text-indigo-700">Customer Journey Road</h1>
+      
+      <div className="relative h-48">
+        {/* SVG Pathway */}
+        <svg className="absolute w-full h-full" viewBox="0 0 1000 200" preserveAspectRatio="none">
+          <motion.path
+            d={generateCurvedPath(steps.length, 1000, 100)}
+            fill="none"
+            stroke="#818CF8"
+            strokeWidth="4"
+            strokeLinecap="round"
+            strokeDasharray="0 0"
+            initial="hidden"
+            animate="visible"
+            variants={pathVariants}
+          />
+        </svg>
+
+        {/* Steps */}
+        <div className="relative flex justify-between h-full">
+          {steps.map((step, index) => (
+            <motion.div
+              key={index}
+              className="absolute flex flex-col items-center"
+              style={{
+                left: `${(index / (steps.length - 1)) * 100}%`,
+                top: index % 2 === 0 ? '30%' : '70%',
+                transform: 'translateX(-50%)'
+              }}
+              initial="hidden"
+              animate="visible"
+              variants={nodeVariants}
+              transition={{ delay: index * 0.2 }}
+            >
+              {/* Animated Node */}
+              <motion.div 
+                className={`w-16 h-16 rounded-full flex items-center justify-center text-white font-bold text-xl mb-2 
+                  ${getStepColor(index)} shadow-xl border-4 border-white`}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                {step.icon || index + 1}
+              </motion.div>
+              
+              {/* Label */}
+              <motion.div 
+                className="text-center"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: index * 0.2 + 0.3 }}
+              >
+                <h3 className="text-lg font-semibold text-gray-800">{step.title}</h3>
+                {step.description && (
+                  <p className="text-sm text-gray-600 mt-1">{step.description}</p>
+                )}
+              </motion.div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Generate a curved SVG path
+const generateCurvedPath = (count: number, width: number, height: number): string => {
+  const segmentWidth = width / (count - 1);
+  let path = `M0,${height/2}`;
+  
+  for (let i = 1; i < count; i++) {
+    const x = i * segmentWidth;
+    const y = i % 2 === 0 ? height * 0.3 : height * 0.7;
+    path += ` Q${x - segmentWidth/2},${height/2} ${x},${y}`;
+  }
+  
+  return path;
+};
+
+// Color mapping for nodes
+const getStepColor = (index: number): string => {
+  const colors = [
+    'bg-blue-500',    // START
+    'bg-indigo-500',  // AWARENESS
+    'bg-purple-500',  // INTEREST
+    'bg-pink-500',    // PURCHASE
+    'bg-green-500',   // RETENTION
+    'bg-teal-500',    // ADVOCACY
+    'bg-yellow-500',  // FINISH
+  ];
+  return colors[index % colors.length];
+};
+
+// Example usage with icons
+export const CustomerJourneyExample = () => {
+  const steps: JourneyStep[] = [
+    { title: 'START', icon: <FiFlag size={24} /> },
+    { title: 'AWARENESS', icon: <FiEye size={24} /> },
+    { title: 'INTEREST', icon: <FiHeart size={24} /> },
+    { title: 'PURCHASE', icon: <FiShoppingCart size={24} /> },
+    { title: 'RETENTION', icon: <FiRepeat size={24} /> },
+    { title: 'ADVOCACY', icon: <FiShare2 size={24} /> },
+    { title: 'FINISH', icon: <FiCheckCircle size={24} /> }
+  ];
+
+  return (
+    <div className="min-h-screen bg-gray-50 py-12">
+      <HorizontalJourneyRoadmap steps={steps} />
+    </div>
+  );
+};
+
+*/
+
+/*
+
+import React from 'react';
 
 interface JourneyStep {
   title: string;
