@@ -30,274 +30,236 @@ public class carpooling {
 }
 
 /*
+import { useState, useRef, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useInView } from 'react-intersection-observer';
 
-import React from 'react';
-import { motion } from 'framer-motion';
-import { FiFlag, FiEye, FiHeart, FiShoppingCart, FiRepeat, FiShare2, FiCheckCircle } from 'react-icons/fi';
+const journeyEvents = [
+  {
+    id: 1,
+    date: '2023-01-15',
+    title: 'Project Kickoff',
+    description: 'Initial meeting with stakeholders to define project scope and objectives.',
+    icon: '🏁',
+    color: 'bg-blue-500'
+  },
+  {
+    id: 2,
+    date: '2023-02-28',
+    title: 'Research Phase',
+    description: 'Conducted user research and market analysis to identify key opportunities.',
+    icon: '🔍',
+    color: 'bg-green-500'
+  },
+  {
+    id: 3,
+    date: '2023-04-10',
+    title: 'Prototype Development',
+    description: 'Created interactive prototypes for user testing and feedback.',
+    icon: '📱',
+    color: 'bg-yellow-500'
+  },
+  {
+    id: 4,
+    date: '2023-06-22',
+    title: 'User Testing',
+    description: 'Conducted usability tests with 20 participants to validate design decisions.',
+    icon: '🧪',
+    color: 'bg-orange-500'
+  },
+  {
+    id: 5,
+    date: '2023-08-05',
+    title: 'Development Sprint',
+    description: 'Engineering team began implementation of core features.',
+    icon: '⚙️',
+    color: 'bg-red-500'
+  },
+  {
+    id: 6,
+    date: '2023-10-18',
+    title: 'Beta Launch',
+    description: 'Released product to select group of beta testers for real-world feedback.',
+    icon: '🚦',
+    color: 'bg-purple-500'
+  },
+  {
+    id: 7,
+    date: '2024-01-10',
+    title: 'Official Launch',
+    description: 'Public release of the product with marketing campaign.',
+    icon: '🏆',
+    color: 'bg-indigo-500'
+  }
+];
 
-interface JourneyStep {
-  title: string;
-  icon?: React.ReactNode;
-  description?: string;
-}
+const formatDate = (dateString) => {
+  const options = { year: 'numeric', month: 'short', day: 'numeric' };
+  return new Date(dateString).toLocaleDateString('en-US', options);
+};
 
-const HorizontalJourneyRoadmap: React.FC<{ steps: JourneyStep[] }> = ({ steps }) => {
-  const pathVariants = {
-    hidden: { pathLength: 0 },
-    visible: { 
-      pathLength: 1,
-      transition: { duration: 1.5, ease: "easeInOut" }
-    }
-  };
+const RoadEvent = ({ event, isLast, expanded, onClick }) => {
+  const [ref, inView] = useInView({
+    threshold: 0.5,
+    triggerOnce: false
+  });
 
-  const nodeVariants = {
-    hidden: { scale: 0 },
-    visible: { 
-      scale: 1,
-      transition: { type: "spring", damping: 10, stiffness: 100 }
-    }
+  const variants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 }
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-12">
-      <h1 className="text-3xl font-bold text-center mb-16 text-indigo-700">Customer Journey Road</h1>
+    <motion.div
+      ref={ref}
+      initial="hidden"
+      animate={inView ? "visible" : "hidden"}
+      variants={variants}
+      transition={{ duration: 0.5 }}
+      className="relative flex flex-col items-center px-4"
+    >
+      {/* Road marker line */}
+      <div className={`absolute h-8 w-1 ${event.color} top-0`}></div>
       
-      <div className="relative h-48">
-        {/* SVG Pathway */}
-        <svg className="absolute w-full h-full" viewBox="0 0 1000 200" preserveAspectRatio="none">
-          <motion.path
-            d={generateCurvedPath(steps.length, 1000, 100)}
-            fill="none"
-            stroke="#818CF8"
-            strokeWidth="4"
-            strokeLinecap="round"
-            strokeDasharray="0 0"
-            initial="hidden"
-            animate="visible"
-            variants={pathVariants}
-          />
-        </svg>
-
-        {/* Steps */}
-        <div className="relative flex justify-between h-full">
-          {steps.map((step, index) => (
-            <motion.div
-              key={index}
-              className="absolute flex flex-col items-center"
-              style={{
-                left: `${(index / (steps.length - 1)) * 100}%`,
-                top: index % 2 === 0 ? '30%' : '70%',
-                transform: 'translateX(-50%)'
-              }}
-              initial="hidden"
-              animate="visible"
-              variants={nodeVariants}
-              transition={{ delay: index * 0.2 }}
-            >
-              {/* Animated Node */}
-              <motion.div 
-                className={`w-16 h-16 rounded-full flex items-center justify-center text-white font-bold text-xl mb-2 
-                  ${getStepColor(index)} shadow-xl border-4 border-white`}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-              >
-                {step.icon || index + 1}
-              </motion.div>
-              
-              {/* Label */}
-              <motion.div 
-                className="text-center"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: index * 0.2 + 0.3 }}
-              >
-                <h3 className="text-lg font-semibold text-gray-800">{step.title}</h3>
-                {step.description && (
-                  <p className="text-sm text-gray-600 mt-1">{step.description}</p>
-                )}
-              </motion.div>
-            </motion.div>
+      {/* Road sign post */}
+      <div className="absolute h-16 w-1 bg-gray-400 top-8"></div>
+      
+      {/* Event marker */}
+      <div 
+        className={`absolute w-10 h-10 rounded-full flex items-center justify-center top-24 z-10 cursor-pointer text-xl ${event.color} text-white border-4 border-white shadow-lg`}
+        onClick={onClick}
+      >
+        {event.icon}
+      </div>
+      
+      {/* Road surface */}
+      {!isLast && (
+        <div className="absolute h-1 bg-gray-700 top-32 left-1/2 right-0"></div>
+      )}
+      
+      {/* Road markings (dashed line) */}
+      {!isLast && (
+        <div className="absolute h-1 top-32 left-1/2 right-0 flex">
+          {[...Array(10)].map((_, i) => (
+            <div key={i} className="w-4 h-1 bg-yellow-400 mr-4"></div>
           ))}
+        </div>
+      )}
+      
+      {/* Event card */}
+      <div 
+        className={`mt-32 p-4 rounded-lg shadow-sm cursor-pointer transition-all duration-300 w-48 ${expanded ? 'bg-white shadow-lg' : 'bg-gray-50'}`}
+        onClick={onClick}
+      >
+        <div className="flex flex-col items-center">
+          <h3 className="font-semibold text-center">{event.title}</h3>
+          <span className="text-xs text-gray-500 mt-1">{formatDate(event.date)}</span>
+        </div>
+        
+        <AnimatePresence>
+          {expanded && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3 }}
+              className="overflow-hidden text-center mt-2 text-xs"
+            >
+              <p className="text-gray-600">{event.description}</p>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </motion.div>
+  );
+};
+
+const RoadJourney = () => {
+  const [expandedEvent, setExpandedEvent] = useState(null);
+  const containerRef = useRef(null);
+
+  const handleEventClick = (eventId) => {
+    setExpandedEvent(expandedEvent === eventId ? null : eventId);
+  };
+
+  useEffect(() => {
+    if (expandedEvent && containerRef.current) {
+      const element = document.getElementById(`event-${expandedEvent}`);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      }
+    }
+  }, [expandedEvent]);
+
+  return (
+    <div className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="text-center mb-12"
+        >
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Project Roadmap</h1>
+          <p className="text-gray-600">Follow the road to see our journey milestones</p>
+        </motion.div>
+
+        {/* Road Container */}
+        <div 
+          ref={containerRef}
+          className="bg-white rounded-xl shadow-sm p-6 relative overflow-hidden"
+        >
+          {/* Road background */}
+          <div className="absolute inset-0 bg-gray-200 opacity-10"></div>
+          
+          {/* Road surface */}
+          <div className="absolute h-1 bg-gray-700 top-32 left-0 right-0"></div>
+          
+          {/* Center dashed line */}
+          <div className="absolute h-1 top-32 left-0 right-0 flex">
+            {[...Array(30)].map((_, i) => (
+              <div key={i} className="w-4 h-1 bg-yellow-400 mr-4"></div>
+            ))}
+          </div>
+          
+          {/* Side stripes */}
+          <div className="absolute h-1 top-28 left-0 right-0 border-t-2 border-dashed border-gray-400"></div>
+          <div className="absolute h-1 top-36 left-0 right-0 border-t-2 border-dashed border-gray-400"></div>
+
+          {/* Events container */}
+          <div className="overflow-x-auto pb-12">
+            <div className="flex" style={{ minWidth: `${journeyEvents.length * 200}px` }}>
+              {journeyEvents.map((event, index) => (
+                <div 
+                  key={event.id} 
+                  id={`event-${event.id}`}
+                  className="flex-shrink-0"
+                >
+                  <RoadEvent
+                    event={event}
+                    isLast={index === journeyEvents.length - 1}
+                    expanded={expandedEvent === event.id}
+                    onClick={() => handleEventClick(event.id)}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Starting line flag */}
+          <div className="absolute top-20 left-4 text-4xl">🚩</div>
+          
+          {/* Finish line flag */}
+          <div className="absolute top-20 right-4 text-4xl">🏁</div>
         </div>
       </div>
     </div>
   );
 };
 
-// Generate a curved SVG path
-const generateCurvedPath = (count: number, width: number, height: number): string => {
-  const segmentWidth = width / (count - 1);
-  let path = `M0,${height/2}`;
-  
-  for (let i = 1; i < count; i++) {
-    const x = i * segmentWidth;
-    const y = i % 2 === 0 ? height * 0.3 : height * 0.7;
-    path += ` Q${x - segmentWidth/2},${height/2} ${x},${y}`;
-  }
-  
-  return path;
-};
-
-// Color mapping for nodes
-const getStepColor = (index: number): string => {
-  const colors = [
-    'bg-blue-500',    // START
-    'bg-indigo-500',  // AWARENESS
-    'bg-purple-500',  // INTEREST
-    'bg-pink-500',    // PURCHASE
-    'bg-green-500',   // RETENTION
-    'bg-teal-500',    // ADVOCACY
-    'bg-yellow-500',  // FINISH
-  ];
-  return colors[index % colors.length];
-};
-
-// Example usage with icons
-export const CustomerJourneyExample = () => {
-  const steps: JourneyStep[] = [
-    { title: 'START', icon: <FiFlag size={24} /> },
-    { title: 'AWARENESS', icon: <FiEye size={24} /> },
-    { title: 'INTEREST', icon: <FiHeart size={24} /> },
-    { title: 'PURCHASE', icon: <FiShoppingCart size={24} /> },
-    { title: 'RETENTION', icon: <FiRepeat size={24} /> },
-    { title: 'ADVOCACY', icon: <FiShare2 size={24} /> },
-    { title: 'FINISH', icon: <FiCheckCircle size={24} /> }
-  ];
-
-  return (
-    <div className="min-h-screen bg-gray-50 py-12">
-      <HorizontalJourneyRoadmap steps={steps} />
-    </div>
-  );
-};
-
-*/
-
+export default RoadJourney;
 /*
 
-import React from 'react';
-
-interface JourneyStep {
-  title: string;
-  description?: string; // Optional for this layout
-}
-
-interface UserJourneyRoadmapProps {
-  steps: JourneyStep[];
-}
-
-const HorizontalJourneyRoadmap: React.FC<UserJourneyRoadmapProps> = ({ steps }) => {
-  return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-center mb-12 text-indigo-700">Customer Journey Road</h1>
-      
-      <div className="relative">
-        {/* Main horizontal pathway line */}
-        <div className="absolute left-0 right-0 top-1/2 h-2 bg-indigo-300 transform -translate-y-1/2"></div>
-        
-        <div className="flex justify-between relative z-10">
-          {steps.map((step, index) => (
-            <div key={index} className="flex flex-col items-center">
-              {/* Step node */}
-              <div className={`w-16 h-16 rounded-full flex items-center justify-center text-white font-bold text-lg mb-2 
-                ${getStepColor(index)} shadow-lg border-4 border-white`}>
-                {index + 1}
-              </div>
-              
-              {/* Step label */}
-              <div className="text-center mt-2">
-                <h3 className="text-lg font-semibold text-gray-800">{step.title}</h3>
-                {step.description && (
-                  <p className="text-sm text-gray-600 mt-1">{step.description}</p>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-// Helper function to get different background colors for nodes
-const getStepColor = (index: number): string => {
-  const colors = [
-    'bg-blue-500',    // START
-    'bg-indigo-500',  // AWARENESS
-    'bg-purple-500',  // INTEREST
-    'bg-pink-500',    // PURCHASE
-    'bg-green-500',   // RETENTION
-    'bg-teal-500',    // ADVOCACY
-    'bg-yellow-500',  // FINISH
-  ];
-  return colors[index % colors.length];
-};
-
-export default HorizontalJourneyRoadmap;
-
-
-
-
-import React from 'react';
-import UserJourneyRoadmap from './UserJourneyRoadmap';
-
-const App = () => {
-  const userJourney = [
-    {
-      title: 'Awareness',
-      description: 'User first discovers your product or service',
-      actions: [
-        'See social media ad',
-        'Read blog post',
-        'Word of mouth referral'
-      ]
-    },
-    {
-      title: 'Consideration',
-      description: 'User evaluates whether your product fits their needs',
-      actions: [
-        'Visit pricing page',
-        'Compare features',
-        'Read customer reviews'
-      ]
-    },
-    {
-      title: 'Purchase',
-      description: 'User makes the decision to buy or subscribe',
-      actions: [
-        'Add to cart',
-        'Complete checkout',
-        'Receive confirmation'
-      ]
-    },
-    {
-      title: 'Retention',
-      description: 'User continues to use and find value in your product',
-      actions: [
-        'Receive onboarding emails',
-        'Use key features',
-        'Renew subscription'
-      ]
-    },
-    {
-      title: 'Advocacy',
-      description: 'User becomes a promoter of your product',
-      actions: [
-        'Refer friends',
-        'Write positive review',
-        'Share on social media'
-      ]
-    }
-  ];
-
-  return (
-    <div className="min-h-screen bg-gray-50 py-12">
-      <UserJourneyRoadmap journey={userJourney} />
-    </div>
-  );
-};
-
-export default App;
 
 
 
