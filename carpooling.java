@@ -24,7 +24,8 @@ public class carpooling {
         for(i=0;i<n;i++){
             System.out.println(arr[i][0]+" "+arr[i][1]);
         }
-       
+
+        
     }
     
 }
@@ -259,7 +260,50 @@ const RoadJourney = () => {
 
 export default RoadJourney;
 /*
+import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 
+const UserNotFound = ({ username, onRetry }) => {
+  return (
+    <div className="flex flex-col items-center justify-center min-h-[60vh] px-4 text-center">
+      <div className="bg-red-50 p-6 rounded-full mb-6">
+        <ExclamationTriangleIcon className="h-12 w-12 text-red-500" />
+      </div>
+      
+      <h2 className="text-2xl font-bold text-gray-800 mb-2">
+        User Not Found
+      </h2>
+      
+      <p className="text-gray-600 mb-6 max-w-md">
+        {username ? `We couldn't find any data for "${username}".` : "No user data available."}
+        <br />
+        Please check the username and try again.
+      </p>
+      
+      <div className="flex gap-4">
+        {onRetry && (
+          <button
+            onClick={onRetry}
+            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            Try Again
+          </button>
+        )}
+        <button
+          onClick={() => window.history.back()}
+          className="px-6 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors"
+        >
+          Go Back
+        </button>
+      </div>
+      
+      <div className="mt-8 text-sm text-gray-500">
+        <p>Need help? <a href="#" className="text-blue-600 hover:underline">Contact support</a></p>
+      </div>
+    </div>
+  );
+};
+
+export default UserNotFound;
 
 
 
