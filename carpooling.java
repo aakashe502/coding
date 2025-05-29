@@ -29,6 +29,49 @@ public class carpooling {
     }
     
 }
+/*
+from fastapi import FastAPI, HTTPException
+from datetime import datetime
+from pymongo import MongoClient
+
+app = FastAPI()
+
+# MongoDB connection
+client = MongoClient("mongodb://localhost:27017/")
+db = client["your_database_name"]
+
+@app.get("/get_user_time/{user_id}", status_code=200)
+async def get_time_detail(user_id: str):
+    try:
+        collection = db["projectplanning"]
+        total_hours = 0
+        
+        # Find all documents in the collection
+        for doc in collection.find():
+            resources = doc.get("resources", [])
+            
+            for resource in resources:
+                if resource.get("domain_id") == user_id:
+                    # Parse date and check if it's current month
+                    date_str = resource.get("date")
+                    if date_str:
+                        try:
+                            input_date = datetime.strptime(date_str, "%Y-%m-%d")
+                            now = datetime.now()
+                            is_current_month = (input_date.year == now.year) and (input_date.month == now.month)
+                            
+                            if is_current_month:
+                                total_hours += resource.get("hours", 0)
+                        except ValueError as e:
+                            print(f"Error parsing date {date_str}: {e}")
+                            continue
+        
+        return {"success": True, "data": {"hours": total_hours}}
+    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+*/
 
 /*
 import { useState, useRef, useEffect } from 'react';
