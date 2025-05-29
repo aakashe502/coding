@@ -29,6 +29,144 @@ public class carpooling {
     }
     
 }
+
+
+/*
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+
+interface IdeaDetail {
+  hours: number;
+  // Add other properties if they exist
+}
+
+interface Activity {
+  'domain id': string;
+  name: string;
+  description: string;
+  // Add other properties as needed
+}
+
+const YourComponent = () => {
+  const [apiSuccess, setApiSuccess] = useState(false);
+  const [activities, setActivities] = useState<Activity[]>([]);
+  const [ideaDetailMap, setIdeaDetailMap] = useState<Record<string, IdeaDetail>>({});
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [paginatedData, setPaginatedData] = useState<Activity[]>([]);
+
+  useEffect(() => {
+    const fetchUseCases = async () => {
+      try {
+        setLoading(true);
+        
+        // First API call to get resource list
+        const resPdata = await axios.get('http://localhost:8000/get_resource_details?getfull=yes');
+        const data = resPdata.data;
+        
+        setApiSuccess(data.success);
+        setActivities(data.data);
+        setPaginatedData(data.data); // Assuming you want to use this for pagination
+
+        const resourceList = data.data;
+        const domainIds = resourceList.map((item: Activity) => item['domain id']);
+
+        // Second API calls to get time details for each domain
+        const results = await Promise.all(
+          domainIds.map(async (item: string) => {
+            try {
+              const detail = await axios.get<IdeaDetail>(`http://127.0.0.1:8000/get_user_time/${item}`);
+              return [item, detail.data] as [string, IdeaDetail];
+            } catch (error) {
+              console.error(`Error fetching details for ${item}:`, error);
+              return [item, { hours: 0 }] as [string, IdeaDetail]; // Default value if API fails
+            }
+          })
+        );
+
+        const mappedResults: Record<string, IdeaDetail> = Object.fromEntries(results);
+        setIdeaDetailMap(mappedResults);
+
+      } catch (error) {
+        console.error("Error in fetchUseCases:", error);
+      } finally {
+        setLoading(false);
+        setOpen(true);
+      }
+    };
+
+    fetchUseCases();
+  }, []);
+
+  const handleNameClick = (activity: Activity) => {
+    // Your click handler logic
+  };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center w-full h-full ml-56 p-4">
+        <Spinner />
+      </div>
+    );
+  }
+
+  return (
+    <table className="min-w-full divide-y divide-gray-200">
+      <tbody className="bg-white divide-y divide-gray-200">
+        {paginatedData?.map((activity, index) => (
+          <tr key={index} className="hover:bg-gray-50">
+            {Object.entries(activity).map(([key, value], cellIndex) => {
+              if (key === 'description') {
+                return (
+                  <td key={cellIndex}>
+                    <Cutshortcell content={String(value)} />
+                  </td>
+                );
+              }
+              
+              if (key === 'name') {
+                return (
+                  <td key={cellIndex} className="p-2 text-sm whitespace-nowrap">
+                    <span
+                      className="text-blue-600 hover:text-blue-800 cursor-pointer"
+                      onClick={() => handleNameClick(activity)}
+                    >
+                      {String(value)}
+                    </span>
+                  </td>
+                );
+              }
+              
+              if (key === 'domain id') {
+                const hours = ideaDetailMap[String(value)]?.hours || 0;
+                const totalHours = 100; // Replace with your actual total hours
+                
+                return (
+                  <td key={cellIndex} className="p-2 text-sm whitespace-nowrap">
+                    {hours < totalHours ? (
+                      <span className="text-green-500">{hours}</span>
+                    ) : (
+                      <span className="text-red-500">{hours}</span>
+                    )}
+                  </td>
+                );
+              }
+              
+              return (
+                <td key={cellIndex} className="p-2 text-sm whitespace-nowrap">
+                  {Array.isArray(value) ? value.join(',') : String(value)}
+                </td>
+              );
+            })}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+};
+
+export default YourComponent;
+*/
 /*
 from fastapi import FastAPI, HTTPException
 from datetime import datetime
